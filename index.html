@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Chamados </title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Sistema de Chamados  HMPII - SPDM</h1>
+
+    <form id="formChamado">
+      <input type="hidden" id="editarIndex">
+
+      <label>Setor:
+        <input type="text" id="setor" placeholder="Digite o setor" required>
+      </label>
+
+      <label>Profissional que abriu:
+        <input type="text" id="profissional" required>
+      </label>
+
+      <label>Responsável pelo chamado:
+        <input type="text" id="responsavel" required>
+      </label>
+
+      <label>Problema:
+        <textarea id="problema" required></textarea>
+      </label>
+
+      <label>Solução:
+        <textarea id="solucao"></textarea>
+      </label>
+
+      <label>Status:
+        <select id="status" required>
+          <option value="P">Pendente</option>
+          <option value="R">Resolvido</option>
+          <option value="C">Encaminhado para Coordenação</option>
+        </select>
+      </label>
+
+      <button type="submit">Salvar Chamado</button>
+    </form>
+
+    <hr>
+
+    <div class="filtros">
+      <label>Data Início:
+        <input type="date" id="dataInicio">
+      </label>
+      <label>Data Fim:
+        <input type="date" id="dataFim">
+      </label>
+      <button id="btnFiltrar">Filtrar</button>
+      <button id="btnCSV">Exportar CSV</button>
+      <button id="btnPDF">Exportar PDF</button>
+    </div>
+
+    <div id="listaChamados"></div>
+  </div>
+
+  <!-- Modal detalhes -->
+  <div id="modalDetalhes" class="modal">
+    <div class="modal-conteudo">
+      <span id="fecharModal" class="fechar">&times;</span>
+      <h2>Detalhes do Chamado</h2>
+      <div id="detalhesChamado"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
