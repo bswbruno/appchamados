@@ -10,6 +10,18 @@ const fecharModal = document.getElementById("fecharModal");
 
 let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
 
+// Atualiza contadores da sidebar
+function atualizarContadores() {
+  const total = chamados.length;
+  const pend = chamados.filter((c) => c.status === "P").length;
+  const res = chamados.filter((c) => c.status === "R").length;
+  const enc = chamados.filter((c) => c.status === "C").length;
+  document.getElementById("totalChamados").textContent = total;
+  document.getElementById("pendentes").textContent = pend;
+  document.getElementById("resolvidos").textContent = res;
+  document.getElementById("encaminhados").textContent = enc;
+}
+
 // Salvar ou editar chamado
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -30,16 +42,14 @@ form.addEventListener("submit", (e) => {
     status: document.getElementById("status").value,
   };
 
-  if (index === "") {
-    chamados.push(chamado);
-  } else {
-    chamados[index] = chamado;
-  }
+  if (index === "") chamados.push(chamado);
+  else chamados[index] = chamado;
 
   localStorage.setItem("chamados", JSON.stringify(chamados));
   form.reset();
   document.getElementById("editarIndex").value = "";
   mostrarChamados(chamados);
+  atualizarContadores();
 });
 
 // Mostrar chamados
@@ -49,16 +59,19 @@ function mostrarChamados(chamados) {
     const table = document.createElement("table");
     table.innerHTML = `<thead>
       <tr><th>Data/Hora</th><th>Setor</th><th>Profissional</th>
-      <th>Responsável</th><th>Problema</th><th>Solução</th><th>Status</th><th>Ações</th></tr></thead>`;
+      <th>Responsável</th><th>Problema</th><th>Solução</th><th>Status</th><th>Ações</th></tr>
+    </thead>`;
     const tbody = document.createElement("tbody");
 
     chamados.forEach((c, i) => {
       const statusClasse = `status-${c.status}`;
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${c.dataHora}</td><td>${c.setor}</td><td>${
-        c.profissional
-      }</td>
-      <td>${c.responsavel}</td><td>${c.problema}</td><td>${c.solucao}</td>
+      tr.innerHTML = `<td>${c.dataHora}</td>
+      <td>${c.setor}</td>
+      <td>${c.profissional}</td>
+      <td>${c.responsavel}</td>
+      <td>${c.problema}</td>
+      <td>${c.solucao}</td>
       <td><select class="status-chamado ${statusClasse}" data-index="${i}">
         <option value="P" ${c.status === "P" ? "selected" : ""}>P</option>
         <option value="R" ${c.status === "R" ? "selected" : ""}>R</option>
@@ -130,6 +143,7 @@ function mostrarChamados(chamados) {
         chamados.splice(i, 1);
         localStorage.setItem("chamados", JSON.stringify(chamados));
         mostrarChamados(chamados);
+        atualizarContadores();
       }
     });
   });
@@ -141,35 +155,40 @@ function mostrarChamados(chamados) {
       chamados[idx].status = select.value;
       localStorage.setItem("chamados", JSON.stringify(chamados));
       mostrarChamados(chamados);
+      atualizarContadores();
     });
   });
 }
 
 // Modal
 function abrirModal(c) {
-  const statusAbrev = c.status;
   const statusNome =
-    statusAbrev === "P"
+    c.status === "P"
       ? "Pendente"
-      : statusAbrev === "R"
+      : c.status === "R"
       ? "Resolvido"
-      : "Coordenação";
-  detalhesDiv.innerHTML = `<p><strong>Data/Hora:</strong> ${c.dataHora}</p>
-  <p><strong>Setor:</strong> ${c.setor}</p>
-  <p><strong>Profissional:</strong> ${c.profissional}</p>
-  <p><strong>Responsável:</strong> ${c.responsavel}</p>
-  <p><strong>Problema:</strong><br>${c.problema}</p>
-  <p><strong>Solução:</strong><br>${c.solucao || "-"}</p>
-  <p><strong>Status:</strong> ${statusAbrev} - ${statusNome}</p>`;
-  modal.style.display = "block";
+      : "Encaminhado";
+  detalhesDiv.innerHTML = `
+    <p><strong>Data/Hora:</strong> ${c.dataHora}</p>
+    <p><strong>Setor:</strong> ${c.setor}</p>
+    <p><strong>Profissional:</strong> ${c.profissional}</p>
+    <p><strong>Responsável:</strong> ${c.responsavel}</p>
+    <p><strong>Problema:</strong><br>${c.problema}</p>
+    <p><strong>Solução:</strong><br>${c.solucao || "-"}</p>
+    <p><strong>Status:</strong> ${c.status} - ${statusNome}</p>
+  `;
+  modal.classList.add("show");
 }
-fecharModal.onclick = () => (modal.style.display = "none");
+
+// Fechar modal
+fecharModal.onclick = () => modal.classList.remove("show");
 window.onclick = (e) => {
-  if (e.target == modal) modal.style.display = "none";
+  if (e.target == modal) modal.classList.remove("show");
 };
 
 // Inicial
 mostrarChamados(chamados);
+atualizarContadores();
 
 // Filtrar
 btnFiltrar.addEventListener("click", () => {
@@ -214,7 +233,7 @@ btnPDF.addEventListener("click", () => {
         ? "Pendente"
         : c.status === "R"
         ? "Resolvido"
-        : "Coordenação";
+        : "Encaminhado";
     doc.text(`Chamado ${i + 1}`, 10, y);
     y += 6;
     doc.text(`Data/Hora: ${c.dataHora}`, 10, y);
@@ -241,3 +260,13 @@ btnPDF.addEventListener("click", () => {
 
 // Atualiza ao redimensionar
 window.addEventListener("resize", () => mostrarChamados(chamados));
+
+// Alternar tema light/dark
+const toggleThemeBtn = document.getElementById("toggleTheme");
+toggleThemeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  document.body.classList.toggle("light-mode");
+  toggleThemeBtn.textContent = document.body.classList.contains("dark-mode")
+    ? "☀️ Modo Light"
+    : "🌙 Modo Dark";
+});

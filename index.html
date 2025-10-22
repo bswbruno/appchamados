@@ -3,74 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Chamados </title>
+  <title>Sistema de Chamados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>Sistema de Chamados  HMPII - SPDM</h1>
+<body class="light-mode">
 
-    <form id="formChamado">
-      <input type="hidden" id="editarIndex">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+      <li>Total de Chamados: <span id="totalChamados">0</span></li>
+      <li>Pendentes: <span id="pendentes">0</span></li>
+      <li>Resolvidos: <span id="resolvidos">0</span></li>
+      <li>Encaminhados: <span id="encaminhados">0</span></li>
+    </ul>
+    <button id="toggleTheme">🌙 Modo Dark</button>
+  </div>
 
-      <label>Setor:
-        <input type="text" id="setor" placeholder="Digite o setor" required>
-      </label>
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <div class="container">
+      <h1>Sistema de Chamados TI</h1>
 
-      <label>Profissional que abriu:
-        <input type="text" id="profissional" required>
-      </label>
+      <form id="formChamado">
+        <input type="hidden" id="editarIndex">
 
-      <label>Responsável pelo chamado:
-        <input type="text" id="responsavel" required>
-      </label>
+        <label>Setor:
+          <input type="text" id="setor" placeholder="Digite o setor" required>
+        </label>
 
-      <label>Problema:
-        <textarea id="problema" required></textarea>
-      </label>
+        <label>Profissional que abriu:
+          <input type="text" id="profissional" required>
+        </label>
 
-      <label>Solução:
-        <textarea id="solucao"></textarea>
-      </label>
+        <label>Responsável pelo chamado:
+          <input type="text" id="responsavel" required>
+        </label>
 
-      <label>Status:
-        <select id="status" required>
-          <option value="P">Pendente</option>
-          <option value="R">Resolvido</option>
-          <option value="C">Encaminhado para Coordenação</option>
-        </select>
-      </label>
+        <label>Problema:
+          <textarea id="problema" required></textarea>
+        </label>
 
-      <button type="submit">Salvar Chamado</button>
-    </form>
+        <label>Solução:
+          <textarea id="solucao"></textarea>
+        </label>
 
-    <hr>
+        <label>Status:
+          <select id="status" required>
+            <option value="P">Pendente</option>
+            <option value="R">Resolvido</option>
+            <option value="C">Encaminhado para Coordenação</option>
+          </select>
+        </label>
 
-    <div class="filtros">
-      <label>Data Início:
-        <input type="date" id="dataInicio">
-      </label>
-      <label>Data Fim:
-        <input type="date" id="dataFim">
-      </label>
-      <button id="btnFiltrar">Filtrar</button>
-      <button id="btnCSV">Exportar CSV</button>
-      <button id="btnPDF">Exportar PDF</button>
+        <button type="submit">Salvar Chamado</button>
+      </form>
+
+      <hr>
+
+      <div class="filtros">
+        <label>Data Início:
+          <input type="date" id="dataInicio">
+        </label>
+        <label>Data Fim:
+          <input type="date" id="dataFim">
+        </label>
+        <button id="btnFiltrar">Filtrar</button>
+        <button id="btnCSV">Exportar CSV</button>
+        <button id="btnPDF">Exportar PDF</button>
+      </div>
+
+      <div id="listaChamados"></div>
     </div>
-
-    <div id="listaChamados"></div>
   </div>
 
   <!-- Modal detalhes -->
   <div id="modalDetalhes" class="modal">
     <div class="modal-conteudo">
       <span id="fecharModal" class="fechar">&times;</span>
-      <h2>Detalhes do Chamado</h2>
       <div id="detalhesChamado"></div>
     </div>
   </div>
 
+  <footer>
+    Desenvolvido por <a href="https://www.linkedin.com/in/wanderley-bruno/">Bruno dos Santos</a> &copy; 2025
+  </footer>
+
   <script src="script.js"></script>
+ 
 </body>
 </html>
